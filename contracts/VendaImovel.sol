@@ -132,5 +132,36 @@ contract Venda_imovel {
 	  a.valorImovel = 0;
 	  a.safeHash = 0;
 	  a.estado = Estado.Vazio;
-	}
+  }
+  // Retorna as informações do anuncio e de quem foi feito, a partir do id do anuncio
+    function consultarAnuncio(uint id) view public returns(address, uint, Estado){
+        if(id > numAnuncios || id < 0){
+            revert("Anuncio nao existe!");
+        }else{
+            return(Anuncios[id].vendedor, Anuncios[id].valorImovel, Anuncios[id].estado);
+        }
+    }
+    
+    // Retorna os valores do anuncio, a partir do Estado em que ele se encontra
+    function buscarAnuncioEstado(uint i, Estado estadoBuscado) view internal returns(address, uint, Estado) {
+        if(Anuncios[i].estado == estadoBuscado){
+            return(Anuncios[i].vendedor, Anuncios[i].valorImovel, Anuncios[i].estado);  
+        }else{
+            revert("Anuncio nao encontrado com esse ID nesse estado!");
+        }
+    }
+  
+    // Retorna as informacoes pessoais de cada contratante seja vendedor ou comprador, a partir de seu identificador hash 
+    function listarAnunciosIdPessoa(uint i, address idPessoa) view internal returns(uint, Estado) {
+        if(Anuncios[i].vendedor == idPessoa || Anuncios[i].comprador == idPessoa){
+            return(Anuncios[i].valorImovel, Anuncios[i].estado);  
+        }else{
+            revert("Anuncio nao encontrado com esse ID!");
+        }
+    }  
+    
+    // Retorna a quantidade total de anuncios para operacoes de loop
+    function devolveNumAnuncios() view public returns (uint numAnuncioReturn){
+        return numAnuncios;
+    }
 }
